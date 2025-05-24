@@ -1,0 +1,32 @@
+{
+    "#onetrust-consent-sdk": {
+        "reject_button": "onetrust-reject-all-handler",
+        "accept_button": "onetrust-accept-btn-handler",
+        "preferences_button": "onetrust-pc-btn-handler"
+    },
+
+    "#didomi-host" : {
+        "reject_button": "didomi-notice-disagree-button",
+        "accept_button": "didomi-notice-agree-button",
+        "preferences_button": "didomi-notice-learn-more-button"
+    },
+
+    "#CybotCookiebotDialog" : {
+        "reject_button": "CybotCookiebotDialogBodyButtonDecline",
+        "accept_button": "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll",
+        "preferences_button": "CybotCookiebotDialogBodyLevelButtonCustomize"
+    },
+
+    "#uc-main-dialog" : {
+        "reject_button": "deny",
+        "accept_button": "accept",
+        "preferences_button": "more"
+    },
+
+    "#usercentrics-root": {
+        "reject_button": "uc-deny-all-button",
+        "accept_button": "uc-accept-all-button",
+        "preferences_button": "uc-customize-button"
+    }
+
+}
