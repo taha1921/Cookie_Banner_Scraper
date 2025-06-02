@@ -1,32 +1,93 @@
 {
     "#onetrust-consent-sdk": {
+        "element": "buttons", 
+        "attribute": "id",
         "reject_button": "onetrust-reject-all-handler",
         "accept_button": "onetrust-accept-btn-handler",
         "preferences_button": "onetrust-pc-btn-handler"
     },
 
     "#didomi-host" : {
+        "element": "buttons", 
+        "attribute": "id",
         "reject_button": "didomi-notice-disagree-button",
         "accept_button": "didomi-notice-agree-button",
         "preferences_button": "didomi-notice-learn-more-button"
     },
 
     "#CybotCookiebotDialog" : {
+        "element": "buttons", 
+        "attribute": "id",
         "reject_button": "CybotCookiebotDialogBodyButtonDecline",
         "accept_button": "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll",
         "preferences_button": "CybotCookiebotDialogBodyLevelButtonCustomize"
     },
 
     "#uc-main-dialog" : {
+        "element": "buttons", 
+        "attribute": "id",
         "reject_button": "deny",
         "accept_button": "accept",
         "preferences_button": "more"
     },
 
     "#usercentrics-root": {
+        "element": "buttons", 
+        "attribute": "data-testid",
         "reject_button": "uc-deny-all-button",
         "accept_button": "uc-accept-all-button",
         "preferences_button": "uc-customize-button"
-    }
+    },
 
+    "#cl-consent": {
+        "element": "a",
+        "attribute": "data-role",
+        "reject_button": "b_decline",
+        "accept_button": "b_agree",
+        "preferences_button": "b_options"
+    },
+
+    "#cmpbox": {
+        "element": "span",
+        "attribute": "id",
+        "reject_button": "",
+        "accept_button": "cmpwelcomebtnyes",
+        "preferences_button": "cmpwelcomebtncustom"
+    },
+
+    "#coi-banner-wrapper": {
+        "element": "buttons",
+        "attribute": "id",
+        "reject_button": "declineButton",
+        "accept_button": "",
+        "preferences_button": ""
+    },
+
+    "#rti-privacy-banner-id": {
+        "element": "buttons",
+        "attribute": "id",
+        "reject_button": "rti-privacy-open-modal-btn-id",
+        "accept_button": "rti-privacy-accept-btn-screen1-id",
+        "preferences_button": "rti-privacy-customize-btn-id"
+    },
+
+    "#qc-cmp2-container": {
+        "element": "buttons"
+    },
+
+    ".tru_cookie-dialog_wrapper": {
+        "element": "buttons",
+        "attribute": "class",
+        "reject_button": "tru_accept_btn",
+        "accept_button": "tru_deselect_btn",
+        "preferences_button": "tru_options_btn"
+    },
+
+    ".trustarc-background": {
+        "element": "buttons",
+        "attribute": "class",
+        "reject_button": "btn trustarc-declineall-btn submit disable",
+        "accept_button": "btn trustarc-acceptall-btn submit disable",
+        "preferences_button": ""
+    }
 }

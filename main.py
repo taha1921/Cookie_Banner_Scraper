@@ -20,24 +20,24 @@ print(f"Test set size: {len(test)}")
 """
 Takes as input the button elements inside a banner from Playwright and assesses whether there is a reject button on the first layer of the banner.
 """
-async def check_for_reject_button(buttons, cmp_buttons, selector):
+async def check_for_reject_button(buttons, selector):
+
+    attribute = selector["attribute"]
+    reject_button = selector['reject_button']
 
     btn_count = await buttons.count()
-    print(btn_count)
+
     for i in range(btn_count):
         btn = buttons.nth(i)
-        if(selector == '#usercentrics-root'):
-            btn_id = await btn.get_attribute("data-testid")
-        else:
-            btn_id = await btn.get_attribute("id")
-        print(selector, btn_id)
-        if(btn_id == cmp_buttons['reject_button']):
+        btn_id = await btn.get_attribute(attribute)
+        print(btn_id)
+        if(btn_id == reject_button):
             return 1
-        else:
-            text_content = await btn.text_content()
-            text = text_content.strip()
-            if "reject" in text.lower():
-                return 1
+        # else:
+        #     text_content = await btn.text_content()
+        #     text = text_content.strip()
+        #     if "reject" in text.lower():
+        #         return 1
 
     return 0
 
@@ -95,12 +95,12 @@ async def simulator(domain_list, selectors):
                     
                 if result:
                     banner, selector = result
-                    buttons = banner.locator("buttons")
-                    print(buttons)
+                    selector_properties = selectors[selector]
+                    buttons = banner.locator(selector_properties['element'])
+                    # print(buttons)
                     # print(banner)
                     # buttons = await banner.get_by_role('button')
-                    cmp_buttons = selectors[selector]
-                    res = await check_for_reject_button(buttons, cmp_buttons, selector)
+                    res = await check_for_reject_button(buttons, selector_properties)
                     print(f"Reject all button presence for domain {sample_domain}: {res}")
                     reject_all_presence.append(res)
                     await page.close()
@@ -118,7 +118,7 @@ async def simulator(domain_list, selectors):
 
 
 async def main():
-    domains_of_interest = train[train['CMP'].isin(['usercentrics'])]
+    domains_of_interest = train[train['CMP'].isin(['clickio'])]
     domain_list = domains_of_interest['Domain'].tolist()
     domain_list = ['https://www.'+domain if domain != 'support.clever.com' else 'https://support.clever.com/' for domain in domain_list ]
     print(len(domain_list))
@@ -126,7 +126,7 @@ async def main():
     with open('SELECTORS.json', 'r') as file:
         selectors = json.load(file)
 
-    reject_all_presence = await simulator(domain_list[-2:-1], selectors)
+    reject_all_presence = await simulator(domain_list, selectors)
     print(reject_all_presence)
     # domains_of_interest['Automated_Reject_All'] = reject_all_presence
     # accuracy = len(domains_of_interest[((domains_of_interest['Automated_Reject_All'] == 1) & (domains_of_interest['Reject All Option'] == True) & (domains_of_interest['Number of Interactions to Reject'] == 1)) | 
