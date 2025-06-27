@@ -26,11 +26,11 @@ async def check_for_reject_button(buttons, selector):
     reject_button = selector['reject_button']
 
     btn_count = await buttons.count()
-
+    # print(btn_count)
     for i in range(btn_count):
         btn = buttons.nth(i)
         btn_id = await btn.get_attribute(attribute)
-        print(btn_id)
+        # print(btn_id)
         if(btn_id == reject_button):
             return 1
         # else:
@@ -96,10 +96,10 @@ async def simulator(domain_list, selectors):
                 if result:
                     banner, selector = result
                     selector_properties = selectors[selector]
-                    buttons = banner.locator(selector_properties['element'])
+                    # buttons = banner.locator(selector_properties['element'])
                     # print(buttons)
                     # print(banner)
-                    # buttons = await banner.get_by_role('button')
+                    buttons = banner.get_by_role('button')
                     res = await check_for_reject_button(buttons, selector_properties)
                     print(f"Reject all button presence for domain {sample_domain}: {res}")
                     reject_all_presence.append(res)
@@ -118,7 +118,7 @@ async def simulator(domain_list, selectors):
 
 
 async def main():
-    domains_of_interest = train[train['CMP'].isin(['clickio'])]
+    domains_of_interest = train[train['CMP'].isin(['onetrust'])][0:20]
     domain_list = domains_of_interest['Domain'].tolist()
     domain_list = ['https://www.'+domain if domain != 'support.clever.com' else 'https://support.clever.com/' for domain in domain_list ]
     print(len(domain_list))
@@ -128,11 +128,11 @@ async def main():
 
     reject_all_presence = await simulator(domain_list, selectors)
     print(reject_all_presence)
-    # domains_of_interest['Automated_Reject_All'] = reject_all_presence
-    # accuracy = len(domains_of_interest[((domains_of_interest['Automated_Reject_All'] == 1) & (domains_of_interest['Reject All Option'] == True) & (domains_of_interest['Number of Interactions to Reject'] == 1)) | 
-    #             ((domains_of_interest['Automated_Reject_All'] == 0) & (domains_of_interest['Reject All Option'] == False))])
-    # print(f"Total Correct Results: {accuracy}")
+    domains_of_interest['Automated_Reject_All'] = reject_all_presence
+    accuracy = len(domains_of_interest[((domains_of_interest['Automated_Reject_All'] == 1) & (domains_of_interest['Reject All Option'] == True) & (domains_of_interest['Number of Interactions to Reject'] == 1)) | 
+                ((domains_of_interest['Automated_Reject_All'] == 0) & (domains_of_interest['Reject All Option'] == False))])
+    print(f"Total Correct Results: {accuracy}")
 
-    domains_of_interest.to_csv('domains_reject_all.csv', index=False)
+    # domains_of_interest.to_csv('domains_reject_all.csv', index=False)
 
 asyncio.run(main())
