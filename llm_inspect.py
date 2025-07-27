@@ -60,57 +60,58 @@ def extract_cookie_snippets(html, max_snippets=5, max_chars=5000):
 
     return snippets if snippets else None
 
-
-def ask_llm_to_choose(snippets, model_name="deepseek-r1:latest"):
+def ask_llm_to_choose(snippets, model_name="llama3.1:8b"):
     llm = Ollama(model=model_name)
 
     formatted = "\n\n".join([f"Snippet {i+1}:\n{snippet}" for i, snippet in enumerate(snippets)])
 
     prompt = f"""
-    We want to find the HTML element that corresponds to the cookie banner on a webpage. 
-    Since the entire HTML of the page is too large, I will provide you with several snippets of possibly overlapping HTML sections from the page which are my best guesses for containing the cookie banner.
-From these snippets: We are looking to find the root HTML element for the cookie banner that contains the following characteristics:
 
-- Text that mentions cookies, consent, privacy, vendors, tracking etc
-- Buttons or links that allow the user to accept or reject cookies.
+Task: Identify and reconstruct the full HTML element corresponding to the cookie consent banner on a webpage.
 
-Here is an example HTML snippet:
+Context:
+> You will be provided with several possibly overlapping HTML snippets from a webpage.
+> These snippets were selected using keyword matching and may contain parts of the cookie banner.
+> Your job is to stitch together one coherent HTML element that fully represents the cookie consent banner.
 
+Instructions:
+> From the snippets, extract and combine relevant parts into one complete HTML structure representing the cookie banner.
+> The final element should include:
+    >> Text related to cookies, consent, privacy, tracking, or vendors.
+    >> Buttons or links that allow users to accept or reject cookies.
+
+Example input snippets:
+
+<!-- Snippet 1 -->
 <body>
-    <div id = "main page">
-        <div id = "footer">
-            <div id = "cookie-banner-container">
-                <div id="cookie-text">
-                    <p>We use cookies to improve your experience.</p>
-                </div>
-                <div id="cookie-buttons">
-                    <button id="accept">Accept</button>
-                    <button id="reject">Reject</button>
-                </div>
-            </div>
+  <div id="main page">
+    <div id="footer">
+      <div id="cookie-banner-container">
+        <div id="cookie-text">
+          <p>We use cookies to improve your experience.</p>
         </div>
-    </div>
-</body>
 
-and here is the output we would expect:
-
-<div id = "cookie-banner-container">
-    <div id="cookie-text">
-        <p>We use cookies to improve your experience.</p>
-    </div>
-    <div id="cookie-buttons">
-        <button id="accept">Accept</button>
-        <button id="reject">Reject</button>
-    </div>
+<!-- Snippet 2 -->
+<div id="cookie-buttons">
+  <button id="accept">Accept</button>
+  <button id="reject">Reject</button>
 </div>
 
-You only need to return this output once, even if it is found in several of the snippets. 
+Expected output:
+<div id="cookie-banner-container">
+  <div id="cookie-text">
+    <p>We use cookies to improve your experience.</p>
+  </div>
+  <div id="cookie-buttons">
+    <button id="accept">Accept</button>
+    <button id="reject">Reject</button>
+  </div>
+</div>
 
-If you can't find a suitable element that matches this criteria in any of the snippets, return None.
-
-Do not return any other text or explanation, just the desired HTML code.
-
-Here are the HTML snippets to choose from:
+Important rules:
+> Return only one complete HTML element, even if it's repeated or partially found in multiple snippets.
+> If you can't confidently identify such an element, return: None
+> Do not return any explanations, comments, or additional text—just the final HTML.
 
 {formatted}
 """
