@@ -5,16 +5,16 @@ from sklearn.model_selection import train_test_split
 import json
 
 
-data = pd.read_excel('Thesis_Data_2.xlsx', sheet_name='Data')
-explicit_domains = data[data['Implicit vs Explicit'] == 'Explicit']
-CMP_domains = explicit_domains[explicit_domains['CMPTYPE'].isin(['GCMP', 'NOT_GCMP', 'UNKNOWN', 'google_ump'])]
+# data = pd.read_excel('Thesis_Data_2.xlsx', sheet_name='Data')
+# explicit_domains = data[data['Implicit vs Explicit'] == 'Explicit']
+# CMP_domains = explicit_domains[explicit_domains['CMPTYPE'].isin(['GCMP', 'NOT_GCMP', 'UNKNOWN', 'google_ump'])]
 
-train, test = train_test_split(CMP_domains, test_size=0.4, random_state=42)
-val, test = train_test_split(test, test_size=0.5, random_state=42)
+# train, test = train_test_split(CMP_domains, test_size=0.4, random_state=42)
+# val, test = train_test_split(test, test_size=0.5, random_state=42)
 
-print(f"Train set size: {len(train)}")
-print(f"Validation set size: {len(val)}")
-print(f"Test set size: {len(test)}")
+# print(f"Train set size: {len(train)}")
+# print(f"Validation set size: {len(val)}")
+# print(f"Test set size: {len(test)}")
 
 
 """
@@ -117,7 +117,7 @@ async def simulator(domain_list, selectors):
     return reject_all_presence
 
 
-async def main():
+async def process_domains():
     domains_of_interest = train[train['CMP'].isin(['onetrust'])][0:20]
     domain_list = domains_of_interest['Domain'].tolist()
     domain_list = ['https://www.'+domain if domain != 'support.clever.com' else 'https://support.clever.com/' for domain in domain_list ]
@@ -135,4 +135,4 @@ async def main():
 
     # domains_of_interest.to_csv('domains_reject_all.csv', index=False)
 
-asyncio.run(main())
+asyncio.run(process_domains())
