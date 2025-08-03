@@ -118,20 +118,22 @@ async def simulator(domain_list, selectors):
 
 
 async def process_domains():
-    domains_of_interest = train[train['CMP'].isin(['onetrust'])][0:20]
+    train = pd.read_excel('train.xlsx')
+    print(train.head())
+    domains_of_interest = train[(train['Reject All Option'] == True) & (train['Number of Interactions to Reject'] == 1)]
     domain_list = domains_of_interest['Domain'].tolist()
-    domain_list = ['https://www.'+domain if domain != 'support.clever.com' else 'https://support.clever.com/' for domain in domain_list ]
-    print(len(domain_list))
+    domain_list = ['https://'+domain if "https://" not in domain else domain for domain in domain_list ]
+    # print(len(domain_list))
 
     with open('SELECTORS.json', 'r') as file:
         selectors = json.load(file)
 
-    reject_all_presence = await simulator(domain_list, selectors)
-    print(reject_all_presence)
-    domains_of_interest['Automated_Reject_All'] = reject_all_presence
-    accuracy = len(domains_of_interest[((domains_of_interest['Automated_Reject_All'] == 1) & (domains_of_interest['Reject All Option'] == True) & (domains_of_interest['Number of Interactions to Reject'] == 1)) | 
-                ((domains_of_interest['Automated_Reject_All'] == 0) & (domains_of_interest['Reject All Option'] == False))])
-    print(f"Total Correct Results: {accuracy}")
+    # reject_all_presence = await simulator(domain_list, selectors)
+    # print(reject_all_presence)
+    # domains_of_interest['Automated_Reject_All'] = reject_all_presence
+    # accuracy = len(domains_of_interest[((domains_of_interest['Automated_Reject_All'] == 1) & (domains_of_interest['Reject All Option'] == True) & (domains_of_interest['Number of Interactions to Reject'] == 1)) | 
+    #             ((domains_of_interest['Automated_Reject_All'] == 0) & (domains_of_interest['Reject All Option'] == False))])
+    # print(f"Total Correct Results: {accuracy}")
 
     # domains_of_interest.to_csv('domains_reject_all.csv', index=False)
 
