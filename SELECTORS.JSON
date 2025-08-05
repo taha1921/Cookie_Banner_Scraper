@@ -114,7 +114,7 @@
     "#onetrust-consent-sdk": {
         "element": "buttons", 
         "attribute": "id",
-        "reject_button": "#onetrust-reject-all-handler",
+        "reject_button": "#onetrust-reject-all-handler, .ot-pc-refuse-all-handler",
         "accept_button": "#onetrust-accept-btn-handler",
         "preferences_button": "#onetrust-pc-btn-handler"
     },
@@ -156,7 +156,7 @@
     },
 
     "#tc-privacy-wrapper": {
-        "reject_button": "#footer_tc_privacy_button_2, .popin_tc_privacy_button_3"
+        "reject_button": "#footer_tc_privacy_button_2, #popin_tc_privacy_button_3"
     },
 
     ".tru_cookie-dialog_wrapper": {
@@ -172,6 +172,10 @@
         "reject_button": "#truste-consent-required, .trustarc-declineall-btn"
     },
 
+    ".truste_box_overlay_border": {
+        "reject_button": ".required"
+    },
+
     ".twcc__container": {
         "reject_button": "#twcc__decline-button"
     },    
@@ -181,7 +185,7 @@
     },
 
     "#usercentrics-root": {
-        "reject_button": ">>> [data-testid='uc-deny-all-button']"
+        "reject_button": "[data-testid='uc-deny-all-button']"
     },
 
     "yle-consent-sdk-container": {
