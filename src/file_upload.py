@@ -62,7 +62,7 @@ guidelines_label.pack(padx=10, anchor="w")
 
 # Image
 tk.Label(root, text="Example:", font=("Helvetica", 12, "bold")).pack(pady=10)
-image_path = "example.png"
+image_path = "../example.png"
 pil_img = Image.open(image_path)
 pil_img = pil_img.resize((400, 250), Image.Resampling.LANCZOS)
 img = ImageTk.PhotoImage(pil_img)

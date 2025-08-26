@@ -8,15 +8,18 @@
     },    
 
     ".cc-banner__content": {
-        "reject_button": ".cc-banner__button-reject"
+        "reject_button": ".cc-banner__button-reject, [data-cc-action='reject']",
+        "preferences_button": ".cc-banner__button-preferences"
     },
 
     ".cc-nb-main-container": {
-        "reject_button": ".cc-nb-reject"
+        "reject_button": ".cc-nb-reject",
+        "preferences_button": ".cc-nb-changep"
     },
 
     ".cc-banner": {
-        "reject_button": ".cc-dismiss"
+        "reject_button": ".cc-dismiss, #rejectAll-cookies",
+        "preferences_button": ".cmp-pref-link"
     },    
 
     "#cl-consent": {
@@ -28,11 +31,13 @@
     },
 
     ".cky-notice" : {
-        "reject_button": ".cky-btn-reject"
+        "reject_button": ".cky-btn-reject",
+        "preferences_button": ".cky-btn-customize"
     },
 
     "#cmpbox": {
-        "reject_button": ".cmpboxbtnno"
+        "reject_button": ".cmpboxbtnno, .cmpboxbtnreject",
+        "preferences_button": ".cmptxt_btn_settings"
     },
 
     "#coi-banner-wrapper": {
@@ -64,23 +69,23 @@
     },
 
     "#CybotCookiebotDialog" : {
-        "reject_button": "#CybotCookiebotDialogBodyButtonDecline"
+        "reject_button": "#CybotCookiebotDialogBodyButtonDecline",
+        "preferences_button": "#CybotCookiebotDialogBodyLevelButtonCustomize"
     },
 
     "#didomi-host" : {
-        "element": "buttons", 
-        "attribute": "id",
-        "reject_button": "#didomi-notice-disagree-button",
-        "accept_button": "didomi-notice-agree-button",
-        "preferences_button": "didomi-notice-learn-more-button"
+        "reject_button": "#didomi-notice-disagree-button, .didomi-continue-without-agreeing",
+        "preferences_button": "#didomi-notice-learn-more-button"
     },
 
     "#ensNotifyBanner": {
-        "reject_button": "#ensCloseBanner"
+        "reject_button": "#ensCloseBanner, #ensRejectAllModal",
+        "preferences_button": "#ensOpenModal"
     },
 
     ".fc-dialog.fc-choice-dialog": {
-        "reject_button": ".fc-cta-do-not-consent"
+        "reject_button": ".fc-cta-do-not-consent",
+        "preferences_button": ".fc-cta-manage-options"
     },
 
     "#gdprCookieBanner": {
@@ -92,23 +97,37 @@
     },
 
     "#gravitoPROCMP-tab-container-id": {
-        "reject_button": "#gravitoLightCMP-layer1-reject-all"
+        "reject_button": "#gravitoLightCMP-layer1-reject-all, #gravitoLightCMP-layer2-reject-all",
+        "preferences_button": "#gravitoLightCMP-layer1-settings"
     },
 
     "#hs-eu-cookie-confirmation": {
-        "reject_button": "#hs-eu-decline-button"
+        "reject_button": "#hs-eu-decline-button",
+        "preferences_button": "#hs-eu-cookie-settings-button"
+    },
+
+    "#iubenda-cs-banner": {
+        "reject_button": ".iub-btn-reject, .iub-cmp-reject-btn, .purposes-btn-reject",
+        "preferences_button": ".iubenda-advertising-preferences-link, .iubenda-cs-customize-btn"
     },
 
     "#ketch-banner": {
-        "reject_button": "[aria-label='Reject All']"
+        "reject_button": "[aria-label='Reject All']",
+        "preferences_button": "[aria-label='Manage Preferences']"
     },
 
     ".lnc-firstRunPopup": {
-        "reject_button": ".lnc-declineCookiesButton"
+        "reject_button": ".lnc-declineCookiesButton, .lnc-declineAllButton",
+        "preferences_button": ".lnc-customizeCookiesButton"
     },
 
     ".new-uc-wrapper": {
         "reject_button": ".UCFullButtonNecessary"
+    },
+
+    ".ncmp__banner": {
+        "reject_button": "button >> text='Reject all'",
+        "preferences_button": "button >> text='Advanced Settings'"
     },
 
     "#onetrust-consent-sdk": {
@@ -129,7 +148,12 @@
 
     "#privacy-cookie-banners-root" : {
         "reject_button": "[data-tracking-name='cookie-preferences-mloi-initial-opt-out']"
-    },    
+    },
+    
+    "#pg-modal" : {
+        "reject_button": "#pg-reject-btn",
+        "preferences_button": "#pg-configure-btn"
+    },
 
     "#pwa-consent-layer-form": {
         "reject_button": "[data-test=pwa-consent-layer-deny-all]"
@@ -140,15 +164,13 @@
     },
 
     ".rcc-33": {
-        "reject_button": ".rcc-48"
+        "reject_button": ".rcc-48, .rcc-2a",
+        "preferences_button": ".rcc-6d"
     },
 
     "#rti-privacy-banner-id": {
-        "element": "buttons",
-        "attribute": "id",
-        "reject_button": "rti-privacy-open-modal-btn-id",
-        "accept_button": "rti-privacy-accept-btn-screen1-id",
-        "preferences_button": "rti-privacy-customize-btn-id"
+        "reject_button": ".iub-btn-reject, .purposes-btn-reject",
+        "preferences_button": "#rti-privacy-customize-btn-id"
     },
 
     "#tarteaucitronAlertBig" : {
@@ -156,7 +178,8 @@
     },
 
     "#tc-privacy-wrapper": {
-        "reject_button": "#footer_tc_privacy_button_2, #popin_tc_privacy_button_3"
+        "reject_button": "#footer_tc_privacy_button_2, #popin_tc_privacy_button_3, .refuse-all",
+        "preferences_button": "#footer_tc_privacy_button_3, #popin_tc_privacy_button"
     },
 
     ".tru_cookie-dialog_wrapper": {
