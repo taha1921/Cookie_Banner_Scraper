@@ -22,6 +22,10 @@
         "preferences_button": ".cmp-pref-link"
     },    
 
+    "#ccc-module": {
+        "reject_button": "#ccc-reject-settings"
+    },
+
     "#cl-consent": {
         "element": "a",
         "attribute": "data-role",
@@ -48,6 +52,11 @@
         "reject_button": "[data-cmset='denyAll']"
     },
 
+    "#cookie-banner": {
+        "reject_button": "button >> text='Reject'",
+        "preferences_button": "button >> text='Manage Cookies'"
+    },
+
     ".cookie-consent-popup": {
         "reject_button": "#banner-reject-btn"
     },
@@ -61,7 +70,8 @@
     },
 
     "#cookies-politics": {
-        "reject_button": "#cookies-politics-reject-button"
+        "reject_button": "#cookies-politics-reject-button",
+        "preferences_button": "#cookies-politics-config-button"
     },
 
     ".con-wizard": {
@@ -93,7 +103,8 @@
     },
 
     "#gdpr_consent_modal": {
-        "reject_button": "#gdpr_consent_accept_essential_btn"
+        "reject_button": "#gdpr_consent_accept_essential_btn",
+        "preferences_button": "#gdpr_consent_manage_btn"
     },
 
     "#gravitoPROCMP-tab-container-id": {
@@ -122,7 +133,8 @@
     },
 
     ".new-uc-wrapper": {
-        "reject_button": ".UCFullButtonNecessary"
+        "reject_button": "#UCFullButtonNecessary",
+        "preferences_button": "#UCFullButtonPreferences"
     },
 
     ".ncmp__banner": {
@@ -131,23 +143,23 @@
     },
 
     "#onetrust-consent-sdk": {
-        "element": "buttons", 
-        "attribute": "id",
         "reject_button": "#onetrust-reject-all-handler, .ot-pc-refuse-all-handler",
-        "accept_button": "#onetrust-accept-btn-handler",
         "preferences_button": "#onetrust-pc-btn-handler"
     },
 
     "#opbox-gdpr-consents-modal": {
-        "reject_button": "[data-testid='reject_home_view_action']"
+        "reject_button": "[data-testid='reject_home_view_action']",
+        "preferences_button": "[data-testid='manage_home_view_action']"
     },
 
     ".osano-cm-window": {
-        "reject_button": ".osano-cm-denyAll"
+        "reject_button": ".osano-cm-denyAll",
+        "preferences_button": ".osano-cm-manage"
     },
 
     "#privacy-cookie-banners-root" : {
-        "reject_button": "[data-tracking-name='cookie-preferences-mloi-initial-opt-out']"
+        "reject_button": "[data-tracking-name='cookie-preferences-mloi-initial-opt-out'], [data-tracking-name='cookie-preferences-mloi-settings-opt-out']",
+        "preferences_button": "[data-tracking-name='cookie-preferences-mloi-initial-settings']"
     },
     
     "#pg-modal" : {
@@ -160,12 +172,17 @@
     },
 
     "#qc-cmp2-container": {
-        "reject_button": "#disagree-btn"
+        "reject_button": "#disagree-btn",
+        "preferences_button": "#more-options-btn"
     },
 
     ".rcc-33": {
         "reject_button": ".rcc-48, .rcc-2a",
         "preferences_button": ".rcc-6d"
+    },
+
+    ".sn-inner": {
+        "preferences_button": ".sn-b-custom"
     },
 
     "#rti-privacy-banner-id": {
@@ -174,7 +191,8 @@
     },
 
     "#tarteaucitronAlertBig" : {
-        "reject_button": "#tarteaucitronAllDenied2"
+        "reject_button": "#tarteaucitronAllDenied2",
+        "preferences_button": "#tarteaucitronPersonalize2"
     },
 
     "#tc-privacy-wrapper": {
@@ -183,16 +201,19 @@
     },
 
     ".tru_cookie-dialog_wrapper": {
-        "reject_button": "#tru_deselect_btn"
+        "reject_button": "#tru_deselect_btn",
+        "preferences_button": "#tru_options_btn"
     },
 
     ".trustarc-background": {
-        "reject_button": ".trustarc-declineall-btn, #truste-consent-required"
+        "reject_button": ".trustarc-declineall-btn, #truste-consent-required, #declineAllButtonLower",
+        "preferences_button": "#truste-show-consent"
 
     },
 
     "#truste-consent-track": {
-        "reject_button": "#truste-consent-required, .trustarc-declineall-btn"
+        "reject_button": ".trustarc-declineall-btn, #truste-consent-required, #declineAllButtonLower",
+        "preferences_button": "#truste-show-consent"
     },
 
     ".truste_box_overlay_border": {
@@ -204,23 +225,42 @@
     },    
 
     "#uc-main-dialog" : {
-        "reject_button": "#deny"
+        "reject_button": "#deny",
+        "preferences_button": "#more"
+    },
+
+    "[data-testid='uc-banner-content']": {
+        "reject_button": "[data-testid='uc-deny-all-button']",
+        "preferences_button": "[data-testid='uc-more-button']"
     },
 
     "#usercentrics-root": {
-        "reject_button": "[data-testid='uc-deny-all-button']"
+        "reject_button": "#deny, [data-testid='uc-deny-all-button']",
+        "preferences_button": "#more, [data-testid='uc-customize-anchor'], [data-testid='uc-customize-button']"
+    },
+
+    "#usercentrics-cmp-ui": {
+        "reject_button": "#deny, [data-testid='uc-deny-all-button']",
+        "preferences_button": "#more, [data-testid='uc-customize-anchor'], [data-testid='uc-customize-button']"
     },
 
     "yle-consent-sdk-container": {
-        "reject_button": "[name='accept-necessary-consents']"
+        "reject_button": "[name='accept-necessary-consents']",
+        "preferences_button": "[name='select-consents']"
     },
 
     "[data-testid='gdpr-callout-notification-desktop']": {
         "reject_button": "[data-testid='necessary_only_cookies_cta']"
     },
 
+    "[data-testhook='cookie-overlay']": {
+        "reject_button": "[data-testhook='decline-cookies']",
+        "preferences_button": "[data-testhook='cookie-anchor-config']"
+    },
+
     "[aria-labelledby='cookieMainHeader']" : {
-        "reject_button": ".required"
+        "reject_button": "#required",
+        "preferences_button": "#shp"
     }
     
 
