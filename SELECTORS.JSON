@@ -27,11 +27,8 @@
     },
 
     "#cl-consent": {
-        "element": "a",
-        "attribute": "data-role",
-        "reject_button": "b_decline",
-        "accept_button": "b_agree",
-        "preferences_button": "b_options"
+        "reject_button": "[data-role='b-decline']",
+        "preferences_button": "[data-role='b-options']"
     },
 
     ".cky-notice" : {
@@ -123,8 +120,8 @@
     },
 
     "#ketch-banner": {
-        "reject_button": "[aria-label='Reject All']",
-        "preferences_button": "[aria-label='Manage Preferences']"
+        "reject_button": "[aria-label='Reject All'], [aria-label='Reject']",
+        "preferences_button": "[aria-label='Manage Preferences'], [aria-label='Manage']"
     },
 
     ".lnc-firstRunPopup": {
@@ -181,13 +178,13 @@
         "preferences_button": ".rcc-6d"
     },
 
-    ".sn-inner": {
-        "preferences_button": ".sn-b-custom"
-    },
-
     "#rti-privacy-banner-id": {
         "reject_button": ".iub-btn-reject, .purposes-btn-reject",
         "preferences_button": "#rti-privacy-customize-btn-id"
+    },
+
+    "#sc-cookie-banner": {
+        "reject_button": "button >> text='Decline All'"
     },
 
     "#tarteaucitronAlertBig" : {
