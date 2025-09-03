@@ -2,8 +2,11 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from PIL import Image, ImageTk
 import pandas as pd
-import time  # Simulate processing delay
-# from main import process_domains
+import threading
+import asyncio
+from main import process_domains
+
+domains = []
 
 def update_progress(i, total):
     progress_bar['maximum'] = total
@@ -11,11 +14,20 @@ def update_progress(i, total):
     progress_label.config(text=f"Processed: {i} / {total}")
     root.update_idletasks()
 
+def start_processing():
+    if not domains:
+        messagebox.showerror("Error", "No domains loaded!")
+        return
+    
+    start_button.config(state="disabled", text="Processing...")
+    upload_button.config(state="disabled")
+    
+    async def runner():
+        await process_domains(domains, progress_callback=update_progress)
+        start_button.config(text="Processed")
+        messagebox.showinfo("Done", "Processing complete!")
 
-def start_processing(domains):
-    # process_domains(domains, progress_callback=update_progress)
-    messagebox.showinfo("Done", "Processing complete!")
-
+    threading.Thread(target=lambda: asyncio.run(runner()), daemon=True).start()
 
 def upload_file():
     file_path = filedialog.askopenfilename(
@@ -33,10 +45,12 @@ def upload_file():
                 messagebox.showerror("Invalid Data", "All domains must start with 'https://'.")
                 return
         
+            global domains
             domains = df["Domain"].tolist()
-            messagebox.showinfo("Thanks", "Will Process this soon!")
-            # process_domains(domains)        
-        
+            messagebox.showinfo("Upload Successfull", f"Total Number of Domains loaded: {len(domains)}")
+
+            start_button.pack(pady=10) 
+
         except Exception as e:
             messagebox.showerror("Error", f"Could not read file:\n{e}")
 
@@ -74,6 +88,9 @@ image_label.pack(pady=10)
 # Upload button
 upload_button = tk.Button(root, text="Upload CSV File", command=upload_file, font=("Helvetica", 12))
 upload_button.pack(pady=20)
+
+# Create Start Processing button but don’t show it yet
+start_button = tk.Button(root, text="Start Processing", command=start_processing)
 
 # Progress bar
 progress_bar = ttk.Progressbar(root, orient="horizontal", length=400, mode="determinate")

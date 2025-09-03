@@ -4,7 +4,6 @@ import asyncio
 import json
 import logging
 from datetime import datetime
-import re
 
 # data = pd.read_excel('Thesis_Data_2.xlsx', sheet_name='Data')
 # explicit_domains = data[data['Implicit vs Explicit'] == 'Explicit']
@@ -92,12 +91,15 @@ async def check_selectors(page, selectors):
 """
 Runs our simulator which takes a list of domains and a list of CMP selectors to try and find the cookie banner on the page.
 """
-async def simulator(domain_list, selectors, css_selectors, playwright_selectors):
+async def simulator(domain_list, selectors, css_selectors, playwright_selectors, progress_callback=None):
+    
     reject_all_presence = []
+    
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=False)
-        
-        for sample_domain in domain_list:
+
+        total = len(domain_list)
+        for i, sample_domain in enumerate(domain_list, start=1):
             page = await browser.new_page()
             try:
                 await page.goto(sample_domain)
@@ -106,6 +108,9 @@ async def simulator(domain_list, selectors, css_selectors, playwright_selectors)
                 logging.error(f"Could not load domain: {sample_domain}")
                 await page.close()
                 reject_all_presence.append(-2)
+
+                if progress_callback:
+                    progress_callback(i, total)
                 continue
 
             await page.mouse.move(100, 200)
@@ -128,17 +133,20 @@ async def simulator(domain_list, selectors, css_selectors, playwright_selectors)
                     logging.warning(f"No banner found for domain {sample_domain}")
                     await page.screenshot(path=f'../output/screenshots/{sample_domain.replace("https://", "").replace("http://", "").replace(".", "_")}.png')
                     reject_all_presence.append(-1)
-            
+                    
             except Exception as e:
                 logging.error(f"Error or timeout for domain {sample_domain}: {e}")
                 reject_all_presence.append(-2)
+
+            if progress_callback:
+                progress_callback(i, total)
 
             await page.close()
         await browser.close()
     return reject_all_presence
 
 
-async def process_domains():
+async def process_domains(domain_list, progress_callback=None):
     # Start Logging
     logging.basicConfig(
     filename = f"../output/logs/val_run_{datetime.now():%Y-%m-%d_%H-%M-%S}.log",
@@ -147,12 +155,7 @@ async def process_domains():
     )
 
     # Load Domains
-    train = pd.read_excel('../input_files/train.xlsx')
-    domain_list = ['https://sinsay.com', 'https://247sports.com', 'https://zalando.de', 'https://bibleserver.com']
-    # domain_list = train['Domain'].tolist()[0:10]
-    domain_list = ['https://'+domain if "https://" not in domain else domain for domain in domain_list ]
     logging.info(f"Number of domains to process: {len(domain_list)}")
-    # print(len(domain_list))
 
     # Load Selectors
     with open('../SELECTORS.json', 'r') as file:
@@ -171,9 +174,10 @@ async def process_domains():
         else:
             css_selectors.append(selector)
     
-    print(playwright_selectors)
-
-    reject_all_presence = await simulator(domain_list, selectors, css_selectors, playwright_selectors)
+    # Run Simulator
+    reject_all_presence = await simulator(domain_list, selectors, css_selectors, playwright_selectors, progress_callback)
+  
+    # Summarize Results
     total_found = sum(1 for res in reject_all_presence if res in [1,2])
     total_not_found = sum(1 for res in reject_all_presence if res == 0)
     total_no_banner = sum(1 for res in reject_all_presence if res == -1)
@@ -183,4 +187,3 @@ async def process_domains():
     logging.info(f"Total Not Found Results: {total_no_banner}")
     logging.info(f"Total Error Results: {total_error}")
     
-asyncio.run(process_domains())
