@@ -12,9 +12,7 @@ AGGRESIVE_MODE = False
 
 async def find_with_text(banner):
     regex = re.compile(r"^(Decline|Reject|Deny|Alle Ablehnen|Do Not Consent|Ablehnen|Necessary|Essential)", re.IGNORECASE)
-
     reject_button_locator = banner.locator("button,a", has_text=regex)
-
     try:
         await reject_button_locator.first.wait_for(timeout=5000)
         logging.info(f"Found reject button with regex text match")
@@ -26,10 +24,8 @@ async def find_with_text(banner):
 Takes as input the cookie banner from Playwright and assesses whether there is 
 a reject button on the banner.
 """
-async def check_for_reject_button(banner, selector, css_selectors, playwright_selectors):
+async def check_for_reject_button(banner, selector, css_selectors):
     reject_button = selector['reject_button']
-    FOUND = 0
-
     # Find reject button using the designated selector
     if(await banner.locator(reject_button).count() > 0):
         logging.info(f"Found reject button with the designated selector: {reject_button}")
@@ -64,13 +60,13 @@ async def check_for_reject_button(banner, selector, css_selectors, playwright_se
                         logging.info(f"Found reject button with text match on layer 2")
                         return 2
                     else:
-                        logging.debug(f"No reject button found for the domain")
+                        logging.warning(f"No reject button found for the domain")
                         return 0
         except Exception:
-            logging.debug(f"Could not find preferences button or reject button")
+            logging.warning(f"Could not find preferences button or reject button")
             return 0
     else:
-        logging.debug(f"No preferences button or reject button found for the domain")
+        logging.warning(f"No preferences button or reject button found for the domain")
         return 0
 
 """
@@ -110,7 +106,7 @@ async def check_selectors(page, selectors):
 Runs our simulator which takes a list of domains and selectors. 
 It opens each domain in the browser sequentially.
 """
-async def simulator(domain_list, selectors, css_selectors, playwright_selectors, progress_callback=None):
+async def simulator(domain_list, selectors, css_selectors, progress_callback=None, aggressive_mode=False):
     
     reject_all_presence = []
     global SCREENSHOT_DIR
@@ -142,7 +138,7 @@ async def simulator(domain_list, selectors, css_selectors, playwright_selectors,
                 if result:
                     banner, selector = result
                     selector_properties = selectors[selector]
-                    res = await check_for_reject_button(banner, selector_properties, css_selectors, playwright_selectors)
+                    res = await check_for_reject_button(banner, selector_properties, css_selectors)
                     if(res == 0):
                         await page.screenshot(path=f'{SCREENSHOT_DIR}/{sample_domain.replace("https://", "").replace("http://", "").replace(".", "_")}_no_reject.png')
                     elif(res == -2):
@@ -150,9 +146,21 @@ async def simulator(domain_list, selectors, css_selectors, playwright_selectors,
                     reject_all_presence.append(res)
 
                 else:
-                    logging.warning(f"No banner found for domain {sample_domain}")
-                    await page.screenshot(path=f'{SCREENSHOT_DIR}/{sample_domain.replace("https://", "").replace("http://", "").replace(".", "_")}.png')
-                    reject_all_presence.append(-1)
+                    if aggressive_mode:
+                        body = page.locator("body")
+                        res = await find_with_text(body)
+                        if(res == 1):
+                            logging.info(f"Found reject button with aggressive mode")
+                            await page.screenshot(path=f'{SCREENSHOT_DIR}/{sample_domain.replace("https://", "").replace("http://", "").replace(".", "_")}_aggressive.png')
+                            reject_all_presence.append(res)
+                        else:
+                            logging.warning(f"No banner found for domain {sample_domain}")
+                            await page.screenshot(path=f'{SCREENSHOT_DIR}/{sample_domain.replace("https://", "").replace("http://", "").replace(".", "_")}.png')
+                            reject_all_presence.append(-1)
+                    else:
+                        logging.warning(f"No banner found for domain {sample_domain}")
+                        await page.screenshot(path=f'{SCREENSHOT_DIR}/{sample_domain.replace("https://", "").replace("http://", "").replace(".", "_")}.png')
+                        reject_all_presence.append(-1)
                     
             except Exception as e:
                 logging.error(f"Error or timeout for domain {sample_domain}: {e}")
@@ -166,7 +174,7 @@ async def simulator(domain_list, selectors, css_selectors, playwright_selectors,
     return reject_all_presence
 
 
-async def process_domains(domain_list, progress_callback=None):
+async def process_domains(domain_list, progress_callback=None, aggressive_mode=False):
     # Start Logging
 
     os.makedirs("../output/logs", exist_ok=True)
@@ -191,16 +199,13 @@ async def process_domains(domain_list, progress_callback=None):
     reject_button_selectors = list(set(reject_button_selectors))
 
     css_selectors = []
-    playwright_selectors = []
     
     for selector in reject_button_selectors:
-        if(">>" in selector):
-            playwright_selectors.append(selector)
-        else:
+        if(">>" not in selector):
             css_selectors.append(selector)
     
     # Run Simulator
-    reject_all_presence = await simulator(domain_list, selectors, css_selectors, playwright_selectors, progress_callback)
+    reject_all_presence = await simulator(domain_list, selectors, css_selectors, progress_callback, aggressive_mode)
   
     # Summarize Results
     total_found = sum(1 for res in reject_all_presence if res in [1,2])
@@ -224,4 +229,7 @@ async def process_domains(domain_list, progress_callback=None):
     os.makedirs(f"../output/results", exist_ok=True)
     results_df.to_csv(f"../output/results/run_{datetime.now():%Y-%m-%d_%H-%M-%S}.csv", index=False)
 
-    
+    # for testing
+    val_df = pd.read_excel("../input_files/val.xlsx")
+    merged_df = val_df.merge(results_df, on="Domain", how="left")
+    merged_df.to_csv(f"../output/results/validation_{datetime.now():%Y-%m-%d_%H-%M-%S}.csv", index=False)
