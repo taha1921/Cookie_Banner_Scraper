@@ -6,4 +6,5 @@ train.xlsx
 val.xlsx
 output
 input_files
+stats.txt
 __pycache__

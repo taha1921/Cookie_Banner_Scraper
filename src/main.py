@@ -112,7 +112,7 @@ async def simulator(domain_list, selectors, css_selectors, progress_callback=Non
     global SCREENSHOT_DIR
     
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False)
+        browser = await p.chromium.launch(headless=False, args=["--no-startup-window", "--disable-backgrounding-occluded-windows"])
 
         total = len(domain_list)
         for i, sample_domain in enumerate(domain_list, start=1):
@@ -230,6 +230,6 @@ async def process_domains(domain_list, progress_callback=None, aggressive_mode=F
     results_df.to_csv(f"../output/results/run_{datetime.now():%Y-%m-%d_%H-%M-%S}.csv", index=False)
 
     # for testing
-    val_df = pd.read_excel("../input_files/val.xlsx")
+    val_df = pd.read_excel("../input_files/test.xlsx")
     merged_df = val_df.merge(results_df, on="Domain", how="left")
-    merged_df.to_csv(f"../output/results/validation_{datetime.now():%Y-%m-%d_%H-%M-%S}.csv", index=False)
+    merged_df.to_csv(f"../output/results/test_{datetime.now():%Y-%m-%d_%H-%M-%S}.csv", index=False)
