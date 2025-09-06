@@ -3,62 +3,79 @@ from playwright.async_api import async_playwright
 import asyncio
 import json
 import logging
+import os
 from datetime import datetime
+import re
 
-# data = pd.read_excel('Thesis_Data_2.xlsx', sheet_name='Data')
-# explicit_domains = data[data['Implicit vs Explicit'] == 'Explicit']
-# CMP_domains = explicit_domains[explicit_domains['CMPTYPE'].isin(['GCMP', 'NOT_GCMP', 'UNKNOWN', 'google_ump'])]
+SCREENSHOT_DIR = ""
+AGGRESIVE_MODE = False
 
-# train, test = train_test_split(CMP_domains, test_size=0.4, random_state=42)
-# val, test = train_test_split(test, test_size=0.5, random_state=42)
+async def find_with_text(banner):
+    regex = re.compile(r"^(Decline|Reject|Deny|Alle Ablehnen|Do Not Consent|Ablehnen|Necessary|Essential)", re.IGNORECASE)
 
-# print(f"Train set size: {len(train)}")
-# print(f"Validation set size: {len(val)}")
-# print(f"Test set size: {len(test)}")
+    reject_button_locator = banner.locator("button,a", has_text=regex)
 
+    try:
+        await reject_button_locator.first.wait_for(timeout=5000)
+        logging.info(f"Found reject button with regex text match")
+        return 1
+    except:
+        return 0
 
 """
-Takes as input the button elements inside a banner from Playwright and assesses whether there is a reject button on the first layer of the banner.
+Takes as input the cookie banner from Playwright and assesses whether there is 
+a reject button on the banner.
 """
 async def check_for_reject_button(banner, selector, css_selectors, playwright_selectors):
-    # First we check if the specific selector for this selector can be found in the banner
     reject_button = selector['reject_button']
-    # count_main = await banner.locator(reject_button).count()
-    # count_alt = await banner.locator(','.join(reject_button_values)).count()
+    FOUND = 0
 
+    # Find reject button using the designated selector
     if(await banner.locator(reject_button).count() > 0):
         logging.info(f"Found reject button with the designated selector: {reject_button}")
         return 1
-    elif(await banner.locator(','.join(css_selectors)).count() > 0):
+    # Find reject buttons using an alternative selector formed by the union of all existing reject button selectors
+    if(await banner.locator(','.join(css_selectors)).count() > 0):
         logging.info(f"Found reject button with an alternative selector from the the list")
         return 1
-    else:
-        if('preferences_button' in selector):
+
+    # Find reject button using Playwright text matching
+    res = await find_with_text(banner)
+    if(res == 1):
+        return 1
+
+    # If no hits so far, search for a preferences button and then look for a reject button inside it
+    if('preferences_button' in selector):
+        try:
+            await banner.locator(selector['preferences_button']).first.click()
+            logging.info(f"Clicked preferences button with selector: {selector['preferences_button']}")
             try:
-                await banner.locator(selector['preferences_button']).first.click()
-                logging.info(f"Clicked preferences button with selector: {selector['preferences_button']}")
+                await banner.locator(reject_button).wait_for(state='attached', timeout=5000)
+                logging.info(f"Found reject button with the designated selector on layer 2: {reject_button}")
+                return 2
+            except:
                 try:
-                    await banner.locator(reject_button).wait_for(state='attached', timeout=10000)
-                    logging.info(f"Found reject button with the designated selector on layer 2: {reject_button}")
+                    await banner.locator(','.join(css_selectors)).wait_for(state='attached', timeout=5000)
+                    logging.info(f"Found reject button with an alternative selector from the the list on layer 2")
                     return 2
                 except:
-                    try:
-                        await banner.locator(','.join(css_selectors)).wait_for(state='attached', timeout=10000)
-                        logging.info(f"Found reject button with an alternative selector from the the list on layer 2")
+                    res = await find_with_text(banner)
+                    if(res == 1):
+                        logging.info(f"Found reject button with text match on layer 2")
                         return 2
-                    except:
-                        logging.debug(f"No reject button found with selector: {reject_button}")
+                    else:
+                        logging.debug(f"No reject button found for the domain")
                         return 0
-            except Exception as e:
-                logging.error(f"Could not find preferences button or reject button: {e}")
-                return 0
-        else:
-            logging.debug(f"No reject button found with selector: {reject_button}")
+        except Exception:
+            logging.debug(f"Could not find preferences button or reject button")
             return 0
+    else:
+        logging.debug(f"No preferences button or reject button found for the domain")
+        return 0
 
 """
-Takes an individual selector and searches the page for it. If the selector is found then we return the locator object 
-and the selector.
+Takes an individual selector and searches the page for it. 
+If the selector is found then we return the locator object and the selector.
 """
 async def locate_cookie_banner(page, selector):
     try:
@@ -71,8 +88,9 @@ async def locate_cookie_banner(page, selector):
         return None
     
 """
-Takes a list of selectors and launches parallel tasks to search for each selector on the page. The first selector to
-return a result will be the one that we use. If no selector is found then we return None. 
+Takes a list of selectors and launches parallel tasks to search for each selector on the page. 
+The first selector to return a result will be the one that we use.
+If no selector is found then we return None. 
 """
 async def check_selectors(page, selectors):
     tasks = [asyncio.create_task(locate_cookie_banner(page, sel)) for sel in selectors.keys()]
@@ -89,11 +107,13 @@ async def check_selectors(page, selectors):
     return None
 
 """
-Runs our simulator which takes a list of domains and a list of CMP selectors to try and find the cookie banner on the page.
+Runs our simulator which takes a list of domains and selectors. 
+It opens each domain in the browser sequentially.
 """
 async def simulator(domain_list, selectors, css_selectors, playwright_selectors, progress_callback=None):
     
     reject_all_presence = []
+    global SCREENSHOT_DIR
     
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=False)
@@ -124,14 +144,14 @@ async def simulator(domain_list, selectors, css_selectors, playwright_selectors,
                     selector_properties = selectors[selector]
                     res = await check_for_reject_button(banner, selector_properties, css_selectors, playwright_selectors)
                     if(res == 0):
-                        await page.screenshot(path=f'../output/screenshots/{sample_domain.replace("https://", "").replace("http://", "").replace(".", "_")}_no_reject.png')
+                        await page.screenshot(path=f'{SCREENSHOT_DIR}/{sample_domain.replace("https://", "").replace("http://", "").replace(".", "_")}_no_reject.png')
                     elif(res == -2):
-                        await page.screenshot(path=f'../output/screenshots/{sample_domain.replace("https://", "").replace("http://", "").replace(".", "_")}.png')
+                        await page.screenshot(path=f'{SCREENSHOT_DIR}/{sample_domain.replace("https://", "").replace("http://", "").replace(".", "_")}.png')
                     reject_all_presence.append(res)
 
                 else:
                     logging.warning(f"No banner found for domain {sample_domain}")
-                    await page.screenshot(path=f'../output/screenshots/{sample_domain.replace("https://", "").replace("http://", "").replace(".", "_")}.png')
+                    await page.screenshot(path=f'{SCREENSHOT_DIR}/{sample_domain.replace("https://", "").replace("http://", "").replace(".", "_")}.png')
                     reject_all_presence.append(-1)
                     
             except Exception as e:
@@ -148,11 +168,16 @@ async def simulator(domain_list, selectors, css_selectors, playwright_selectors,
 
 async def process_domains(domain_list, progress_callback=None):
     # Start Logging
+
+    os.makedirs("../output/logs", exist_ok=True)
     logging.basicConfig(
-    filename = f"../output/logs/val_run_{datetime.now():%Y-%m-%d_%H-%M-%S}.log",
+    filename = f"../output/logs/run_{datetime.now():%Y-%m-%d_%H-%M-%S}.log",
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
     )
+
+    global SCREENSHOT_DIR
+    SCREENSHOT_DIR = f"../output/screenshots/run_{datetime.now():%Y-%m-%d_%H-%M-%S}"
 
     # Load Domains
     logging.info(f"Number of domains to process: {len(domain_list)}")
@@ -182,8 +207,21 @@ async def process_domains(domain_list, progress_callback=None):
     total_not_found = sum(1 for res in reject_all_presence if res == 0)
     total_no_banner = sum(1 for res in reject_all_presence if res == -1)
     total_error = sum(1 for res in reject_all_presence if res == -2)
-    logging.info(f"Total Correct Results: {total_found}")
-    logging.info(f"Total Incorrect Results: {total_not_found}")
+    logging.info(f"Total Results with a reject button: {total_found}")
+    logging.info(f"Total Results without a reject button: {total_not_found}")
     logging.info(f"Total Not Found Results: {total_no_banner}")
     logging.info(f"Total Error Results: {total_error}")
+
+    
+    reject_button_map = {1: "FOUND", 2: "FOUND", 0: "NOT FOUND", -1: "NO BANNER", -2: "ERROR"}
+    interactions_map  ={1: "Layer 1", 2: "Layer 2", 0: "N/A", -1: "N/A", -2: "N/A"}
+    results_df = pd.DataFrame({
+        "Domain": domain_list,
+        "Reject Button Presence": [reject_button_map[res] for res in reject_all_presence],
+        "Reject Button Layer": [interactions_map[res] for res in reject_all_presence]
+    })
+
+    os.makedirs(f"../output/results", exist_ok=True)
+    results_df.to_csv(f"../output/results/run_{datetime.now():%Y-%m-%d_%H-%M-%S}.csv", index=False)
+
     
