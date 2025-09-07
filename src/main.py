@@ -11,7 +11,7 @@ SCREENSHOT_DIR = ""
 AGGRESIVE_MODE = False
 
 async def find_with_text(banner):
-    regex = re.compile(r"^(Decline|Reject|Deny|Alle Ablehnen|Do Not Consent|Ablehnen|Necessary|Essential)", re.IGNORECASE)
+    regex = re.compile(r"^(Decline|Reject|Deny|Alle Ablehnen|Do Not Consent|Ablehnen|Necessary|Essential|Disagree|I do not consent|Do not accept)", re.IGNORECASE)
     reject_button_locator = banner.locator("button,a", has_text=regex)
     try:
         await reject_button_locator.first.wait_for(timeout=5000)

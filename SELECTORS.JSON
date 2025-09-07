@@ -36,6 +36,11 @@
         "preferences_button": ".cky-btn-customize"
     },
 
+    "#__cmp_body": {
+        "reject_button": ".rejectLink",
+        "preferences_button": ".manageLink"
+    },
+
     "#cmpbox": {
         "reject_button": ".cmpboxbtnno, .cmpboxbtnreject",
         "preferences_button": ".cmptxt_btn_settings"
@@ -62,6 +67,11 @@
         "reject_button": "#no"
     },
 
+    ".cookiefirst-root": {
+        "reject_button": "[data-cookiefirst-action='reject_second']",
+        "preferences_button": "[data-cookiefirst-action='adjust']"
+    },
+
     "#cookie-popup": {
         "reject_button": "#decline-cookies"
     },
@@ -81,7 +91,7 @@
     },
 
     "#didomi-host" : {
-        "reject_button": "#didomi-notice-disagree-button, .didomi-continue-without-agreeing",
+        "reject_button": "#didomi-notice-disagree-button, .didomi-continue-without-agreeing, #btn-toggle-disagree",
         "preferences_button": "#didomi-notice-learn-more-button"
     },
 
@@ -129,15 +139,17 @@
         "preferences_button": ".lnc-customizeCookiesButton"
     },
 
+
     ".new-uc-wrapper": {
         "reject_button": "#UCFullButtonNecessary",
         "preferences_button": "#UCFullButtonPreferences"
     },
 
-    ".ncmp__banner": {
+    "#ncmp__tool": {
         "reject_button": "button >> text='Reject all'",
         "preferences_button": "button >> text='Advanced Settings'"
     },
+    
 
     "#onetrust-consent-sdk": {
         "reject_button": "#onetrust-reject-all-handler, .ot-pc-refuse-all-handler",
@@ -170,12 +182,17 @@
 
     "#qc-cmp2-container": {
         "reject_button": "#disagree-btn",
-        "preferences_button": "#more-options-btn"
+        "preferences_button": "#more-options-btn, [mode = 'secondary']"
     },
 
     ".rcc-33": {
         "reject_button": ".rcc-48, .rcc-2a",
         "preferences_button": ".rcc-6d"
+    },
+
+    ".rodo-popup": {
+        "reject_button": ".rodo-popup-reject",
+        "preferences_button": ".rodo-popup-settings, .rodo-popup-main-settings"
     },
 
     "#rti-privacy-banner-id": {
@@ -185,6 +202,11 @@
 
     "#sc-cookie-banner": {
         "reject_button": "button >> text='Decline All'"
+    },
+
+    "#sn-inner" : {
+        "reject_button": "#reject-all",
+        "preferences_button": "#sn-b-custom"
     },
 
     "#tarteaucitronAlertBig" : {
@@ -237,7 +259,7 @@
     },
 
     "#usercentrics-cmp-ui": {
-        "reject_button": "#deny, [data-testid='uc-deny-all-button']",
+        "reject_button": "#deny, [data-testid='uc-deny-all-button'], .deny, .deny.uc-deny-button",
         "preferences_button": "#more, [data-testid='uc-customize-anchor'], [data-testid='uc-customize-button']"
     },
 
@@ -259,6 +281,5 @@
         "reject_button": "#required",
         "preferences_button": "#shp"
     }
-    
 
 }
