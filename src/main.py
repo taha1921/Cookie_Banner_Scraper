@@ -230,6 +230,6 @@ async def process_domains(domain_list, progress_callback=None, aggressive_mode=F
     results_df.to_csv(f"../output/results/run_{datetime.now():%Y-%m-%d_%H-%M-%S}.csv", index=False)
 
     # for testing
-    val_df = pd.read_excel("../input_files/test.xlsx")
-    merged_df = val_df.merge(results_df, on="Domain", how="left")
-    merged_df.to_csv(f"../output/results/test_{datetime.now():%Y-%m-%d_%H-%M-%S}.csv", index=False)
+    # val_df = pd.read_excel("../input_files/test.xlsx")
+    # merged_df = val_df.merge(results_df, on="Domain", how="left")
+    # merged_df.to_csv(f"../output/results/test_{datetime.now():%Y-%m-%d_%H-%M-%S}.csv", index=False)
