@@ -17,6 +17,11 @@ The project was built and tested on windows so to avoid unseen errors please use
 4. You also need to install a chromium for playwright to run the simulator, so run: `poetry run playwright install chromium`
 5. You're now good to go, you can proceed to running the application 
 
+#### For Linux users
+
+1. After installing chromium please also run the following command: `poetry run playwright install-deps`
+2. Incase Tkinter does not come with your python version, please run: `sudo apt install python3-tk`
+
 ## RUNNING THE PROJECT 
 
 1. Shift to the src directory: `cd src`
