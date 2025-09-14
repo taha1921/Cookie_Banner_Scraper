@@ -7,6 +7,8 @@ To run this project, you need to have the following installed:
 1. Python (>= 3.9). The project is has been tested with and is compatible upto version 3.13
 2. Poetry (https://python-poetry.org/) version >= 2.0. The project has been built with version 2.1.4. The website recommends using pipx but it can also be install with `pip install poetry`
 
+The project was built and tested on windows so to avoid unseen errors please use windows to run the project. A small note for linux users is also mentioned in order to run the project successfully but you still may encounter unforseen errors which you will be able to see in the log file. No testing has been done yet on MacOS.
+
 ### Steps
 
 1. Clone the repository: git clone https://github.com/taha1921/Cookie_Banner_Scraper.git
