@@ -1,35 +1,25 @@
-#### INSTALLATION ####
-To run this project, you need:
+## INSTALLATION 
 
-Python >=3.9,<3.14 (tested with 3.9 and 3.13)
+### Requirements
 
-Poetry (https://python-poetry.org/) >=1.5: can be installed with pip install poetry
+To run this project, you need to have the following installed:
 
-Step 1: Clone the repository
-git clone https://github.com/taha1921/GR.git
-cd GR
+1. Python (>= 3.9). The project is has been tested with and is compatible upto version 3.13
+2. Poetry (https://python-poetry.org/) version >= 2.0. The project has been built with version 2.1.4. The website recommends using pipx but it can also be install with `pip install poetry`
 
-Step 2: Install dependency
-run: poetry install
+### Steps
 
-Step 3: Install chromium browser for playwright
-run: poetry run playwright install chromium
+1. Clone the repository: git clone https://github.com/taha1921/Cookie_Banner_Scraper.git
+2. Shift to the directory: `cd Cookie_Banner_Scraper`
+3. To install dependencies, open the terminal and run: `poetry install`
+4. You also need to install a chromium for playwright to run the simulator, so run: `poetry run playwright install chromium`
+5. You're now good to go, you can proceed to running the application 
 
-You should now be good to go
+## RUNNING THE PROJECT 
 
-#### RUNNING THE PROJECT ####
-cd src
+1. Shift to the src directory: `cd src`
+2. run the program using: `poetry run python file_upload.py`
 
-run: poetry run python file_upload.py
+This will launch a window to upload your csv file with the domains you want to feed into the program. The structure of the csv can be seen in the example.png file as well as in the window of the program.
 
-This will launch a window to upload your csv file with the domains you want to feed into the program.
-
-Structure your domains csv like the following:
-
-Domain
-https://pullandbear.com
-https://doctolib.fr
-https://meetup.com
-https://klarna.com
-
-The results will be saved in the output/results directory.
+While the program is running, a log file will be generated to monitor the results of the domains in real time, under `output/logs`. The resulting CSV storing the results for each domain will be generated after a successful completion of the program in the `output/results` folder.
