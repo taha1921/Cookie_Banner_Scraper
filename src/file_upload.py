@@ -97,8 +97,8 @@ guidelines_text = (
     "Guidelines:\n"
     "1. Please upload a CSV file with one column named: \"Domain\"\n"
     "2. Each domain must begin with \"https://\"\n"
-    "3. All domains that failed to be processed will be saved in the screenshots folder with the domain name.\n"
-    "4. The resulting data will be saved in a new CSV file named 'results.csv'.\n"
+    "3. All domains resolved with aggressive mode, or as having no banner or with no reject button will be saved in the screenshots folder with the domain name.\n"
+    "4. The resulting data will be saved in a new CSV file in thee results folder.\n"
 )
 guidelines_label = tk.Label(scrollable_frame, text=guidelines_text, justify="left", anchor="w", font=("Helvetica", 11))
 guidelines_label.pack(padx=10, anchor="w")

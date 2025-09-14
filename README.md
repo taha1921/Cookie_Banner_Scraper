@@ -23,3 +23,8 @@ To run this project, you need to have the following installed:
 This will launch a window to upload your csv file with the domains you want to feed into the program. The structure of the csv can be seen in the example.png file as well as in the window of the program.
 
 While the program is running, a log file will be generated to monitor the results of the domains in real time, under `output/logs`. The resulting CSV storing the results for each domain will be generated after a successful completion of the program in the `output/results` folder.
+
+Each run of the program has it's own subfolder inside `output/screenshots` where a screenshot of the domain is saved under any of the following circumstances:
+- A domain was resolved using aggressive mode. The resulting screenshot will have `_aggressive.png` in it's name.
+- A domain was resolved as not having a reject button. The resulting screenshot will have `_no_reject.png` in it's name.
+- No cookie banner could be found for the domain or the website did not load.
